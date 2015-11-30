@@ -30,7 +30,7 @@ For define an *model* you need to define an extended **Model** class.
 Kernel::package('package1');
 class Datos_personales extends Model{
 ```
-for all models you ever will have to use the *Kernel::packeage* method for specify that model own this package.
+for all models you ever will have to use the *Kernel::packeage* method for specify which package own this model.
 but never will need import the *Model* class, because it is imported by default.
 
 So you have to define your fields and contrains field.
