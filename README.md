@@ -49,4 +49,4 @@ So you have to define your fields and contrains field.
   /* So your getters and setters */
 ```
 - The *Constrain::pk* method spesify the primary key for this model, see about more contrains in the CONSTRAINS.md tuto.
-- The *Input::create_text* and *Input::create_integer* methods specify a varchar and int column respectlt in the table reprecented by this model, read about more inputs in the INPUTS.md tuto.
+- The *Input::create_text* and *Input::create_integer* methods specify a varchar and int columns respectly in the table reprecented by this model, read about more inputs in the INPUTS.md tuto.
