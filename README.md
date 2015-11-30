@@ -9,18 +9,18 @@ For use Primal you must to have the follow folder distribution:
   - kernel/
   - packages/
     - your_package/
-     - model/
-        - your_model1.php
-        - your_model2.php
-        - ...
-     - templ/
-        - your_template1.html
-        - your_template2.html
-        - ...
-     - view/
-        - your_view1.php
-        - your_view2.php
-        - ...
+       - model/
+          - your_model1.php
+          - your_model2.php
+          - ...
+       - templ/
+          - your_template1.html
+          - your_template2.html
+          - ...
+       - view/
+          - your_view1.php
+          - your_view2.php
+          - ...
   
 *The names are mandatory*
 #Creating a model#
