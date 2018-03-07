@@ -30,13 +30,13 @@ class DataBase {
     }
 
     public function open() {
-        $this->conexion = mysql_connect(Config::host, Config::user, Config::pass, false, 65536);
-        mysql_select_db(Config::dbnm, $this->conexion);
+        $this->conexion = mysqli_connect(Config::host, Config::user, Config::pass, Config::dbnm, Config::port);
+        
     }
 
     public function executeId($sql) {
         $this->open();
-        $resEmp = mysql_query($sql, $this->conexion);
+        $resEmp = mysqli_query($sql, $this->conexion);
         if (is_bool($resEmp)) {
             $id = mysql_insert_id($this->conexion);
             $this->close();
@@ -49,16 +49,16 @@ class DataBase {
 
     public function execute($sql) {
         $this->open();
-        $resEmp = mysql_query($sql, $this->conexion);
+        $resEmp = mysqli_query($this->conexion, $sql);
         if (!is_bool($resEmp)) {
             $vals = array();
-            while ($rowEmp = mysql_fetch_assoc($resEmp)) {
+            while ($rowEmp = mysqli_fetch_assoc($resEmp)) {
                 array_push($vals, $rowEmp);
             }
             $this->close();
             return $vals;
         } else {
-            echo mysql_error($this->conexion);
+            echo mysqli_error($this->conexion);
             //var_dump($sql);
             $this->close();
             return $resEmp;
@@ -75,7 +75,7 @@ class DataBase {
     }
 
     public function close() {
-        mysql_close($this->conexion);
+        mysqli_close($this->conexion);
     }
 
 }

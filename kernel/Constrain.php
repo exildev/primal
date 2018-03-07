@@ -33,8 +33,8 @@ class Constrain extends Input {
         return new Constrain($name, self::FORAIN_KEY, $package_model);
     }
 
-    public static function pk($this, $name = 'id') {
-        return new Constrain($name, self::PRIMARY_KEY, $this);
+    public static function pk($self, $name = 'id') {
+        return new Constrain($name, self::PRIMARY_KEY, $self);
     }
 
     public function getType() {

@@ -34,7 +34,7 @@ class Admin extends View {
     }
 
     public function login() {
-        return parent::render('login2   .html', array('action' => '?ID=dologin'));
+        return parent::render('login.html', array('action' => '?ID=dologin'));
     }
 
     public function logout() {
@@ -45,13 +45,12 @@ class Admin extends View {
     public function do_login() {
         $admin = new AdminUser();
         $admin->setArray($_POST);
-        echo "wwww";
-        /*if ($admin->autenticate()) {
+        if ($admin->autenticate()) {
             Session::start($admin);
-            //header("Location: ?ID=packs");
+            header("Location: ?ID=packs");
         } else {
-            //header("Location: ?ID=login");
-        }*/
+            header("Location: ?ID=login");
+        }
     }
 
     public function packs() {

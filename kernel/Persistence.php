@@ -27,7 +27,7 @@ class Persistence {
         );
         $sql = $this->sql(array('query' => self::$FILTER, 'table' => $table, 'data' => $array));
         $db = DataBase::getInstance();
-
+        echo "<h1>$sql</h1>";
         $resp = $db->execute($sql);
 
         if ($resp && count($resp)) {
