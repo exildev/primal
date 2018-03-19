@@ -2,6 +2,6 @@
     "name": "primal/primal",
     "description": "PHP RestFull Framework",
     "require": {
-        "php": "^5.3.3 || ^7.0",
+        "php": "^5.3.3 || ^7.0"
     }
 }
