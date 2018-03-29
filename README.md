@@ -1,6 +1,7 @@
 # primal-php
 Primal it's a PHP framework for template and SQL query manage.
 **Install**
+
 Install using composer
 > composer.json
 
@@ -11,6 +12,7 @@ Install using composer
     }
 
 **Get Started**
+
 The first stpep for use Primal is star a new proyect, we will use the bellow command:
 
     $ php vendors/Kernel/commands/start.php myapp
@@ -27,7 +29,7 @@ Then we will have a new folder structure:
 Inside the file we will found the bellow code:
 
 ```php
-    <?php 
+<?php 
 
   class Myapp extends JsonView {
     /**
@@ -40,7 +42,7 @@ Inside the file we will found the bellow code:
 ```
 and finally a file in the root, named `index.php`, here we will found the our project configuration routing, by default we will found this code:
 ```php
- <?php
+<?php
   /**
    * Import kernel framework and routing 
    */
@@ -73,6 +75,7 @@ We will recive:
 ```
 
 **Creating a model**
+
 A model reprecent directly a table in the data base, the model is an interface for manipulate each database table.
 
 For define an *model* we will need to create a class with the same name that our table and extends it from base class **Model**.
@@ -113,7 +116,7 @@ Then we can use the model in our view, for example calling a filter method, it w
   
 Then we will to have a view file like this:
 ```php
-    <?php 
+<?php 
   Kernel::import('app.MyModel ');
   class Myapp extends JsonView {
     /**
