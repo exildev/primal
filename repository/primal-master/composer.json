@@ -1,0 +1,8 @@
+{
+    "name": "luismoralesp/primal",
+    "version": "1.0",
+    "description": "PHP RestFull Framework",
+    "require": {
+        "php": "^5.3.3 || ^7.0"
+    }
+}
