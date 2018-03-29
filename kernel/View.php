@@ -54,9 +54,41 @@ class View {
             return $callback;
         }
     }
-    
+
+    public function getAllPost() {
+        return $_POST;
+    }
+
+    public function getAllGet() {
+        return $_GET;
+    }
+
     public function getFILES() {
         return $_FILES;
+    }
+
+
+    public function getBody() {
+        return file_get_contents('php://input');
+    }
+    
+    
+    public function getArrayBody() {
+        $body = $this->getBody();
+        $array = json_decode($body, true);
+        if ($array){
+            return $array;
+        }
+        throw new NoJsonBodyExceptios($body);
+        
+    }
+    
+    public function getInArrayBody($key, $default) {
+        $body = $this->getArrayBody();
+        if (isset($body[$key])){
+            return $body[$key];
+        }
+        return $default;
     }
 
     public function getGET($key, $callback) {
@@ -79,6 +111,10 @@ class View {
         header('HTTP/1.0 404 Not found');
     }
 
+    public function response_json() {
+        header('Content-Type: application/json');
+    }
+
     public function free(&$obj) {
         if (is_array($obj)) {
             foreach ($obj as $key => $value) {
@@ -92,18 +128,34 @@ class View {
         }
     }
 
-    public function render($url, $array = array(), $static = false) {
-        //$this->free($array);
-        $html = file_get_contents($this->base . "$url");
-        /*$keys = array();
-        $values = array();
+    public function dispatch() {
+        return true;
+    }
+
+    public function render_php($url, $array = array()) {
         foreach ($array as $key => $value) {
-            if (!is_array($value)) {
-                array_push($keys, "{{" . $key . "}}");
-                array_push($values, $value);
+            if (!is_numeric($key)) {
+                $val = $value;
+                eval('$' . $key . ' = $val;');
             }
         }
-        $html = str_replace($keys, $values, $html);*/
+        ob_start();
+        include($this->base . "$url");
+        return ob_get_clean();
+    }
+
+    public function render($url, $array = array(), $static = false) {
+
+        //$this->free($array);
+        $html = file_get_contents($this->base . "$url");        /* $keys = array();
+          $values = array();
+          foreach ($array as $key => $value) {
+          if (!is_array($value)) {
+          array_push($keys, "{{" . $key . "}}");
+          array_push($values, $value);
+          }
+          }
+          $html = str_replace($keys, $values, $html); */
         //$html = preg_replace("/\{\{\w+}\}/", "", $html);
         $keys = array();
         $values = array();
@@ -119,7 +171,7 @@ class View {
             array_push($values, $value);
         }
         $html = str_replace($keys, $values, $html);
-        if (!$static) { 
+        if (!$static) {
             $html = $this->template($html, $array);
         }
         return $html;
@@ -132,7 +184,7 @@ class View {
                 eval('$' . $key . ' = $val;');
             }
         }
-        $nocode = "(\w|[á-úÁ-Ú]|\n|\t| |\<|\>|\/|\{|\}|\}|\$|\(|\)|#|-|\[|\]|!|\"|\'|:|\?|&|=|\.|;|\+)+";
+        $nocode = "(\\|\w|[á-úÁ-Ú]|\n|\t| |\<|\>|\/|\{|\}|\}|\$|\(|\)|#|-|\[|\]|!|\"|\'|:|\?|&|=|\.|;|\+)+";
         $sicode = "(\w|\$|=| |;|\(|\)|<|>|\+|\n|\t|\[|\]|\"|-|\')+";
         $regexp = "/(^|%})(?P<cont>($nocode))($|{%)/";
         $matchs = array();
@@ -148,7 +200,7 @@ class View {
         }
         $regexp = '/{%(?P<cont>((\w|\$|=| |;|\(|\)|<|>|\+|\n|\[|]|"|\t)+))%}/';
         $matchs = array();
-        
+
         $auxil = $html;
         preg_match($regexp, $auxil, $matchs);
         $i = 0;
@@ -164,7 +216,7 @@ class View {
             preg_match($regexp, $auxil, $matchs);
             $i++;
         }
-        
+
         $vreg = '/{{(?P<var>(' . $sicode . '))}}/';
         $vres = array();
         preg_match_all($vreg, $templt, $vres);

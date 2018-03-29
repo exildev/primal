@@ -36,7 +36,6 @@ abstract class Model {
      */
     public function filter($array = array()) {
         $user = Session::get_user();
-        $p = Persistence::getInstance();
         $_model = $this->get_called_class();
         if ($this instanceof User) {
             $_packa = null;
@@ -44,7 +43,7 @@ abstract class Model {
         } else {
             $_packa = $this->get_package();
         }
-        $resp = $p->filter($user, $_packa, strtolower($_model), $array);
+        $resp = $this->__filter($user, $_packa, strtolower($_model), $array);
         $arrayo = array();
         $class = get_class($this);
         if ($resp) {
@@ -55,6 +54,11 @@ abstract class Model {
             }
         }
         return $arrayo;
+    }
+    
+    public function __filter($user, $_packa, $model, $array) {
+        $p = Persistence::getInstance();
+        return $p->filter($user, $_packa, $model, $array);
     }
 
     public function get_fullname() {
@@ -134,7 +138,7 @@ abstract class Model {
             $value = $this->{"get" . ucfirst($name)}();
 
             if ($value instanceof Input) {
-
+                
                 $value->set_array($array);
             } else {
                 $name = $propert->getName();
@@ -186,6 +190,24 @@ abstract class Model {
         return $array;
     }
 
+    public function toArray() {
+        $reflex = new ReflectionClass($this->get_called_class());
+        $properts = $reflex->getProperties();
+        $array = array();
+        foreach ($properts as $propert) {
+            $name = $propert->getName();
+            $value = $this->{"get" . $name}();
+            
+            if ($value instanceof Input || ($value instanceof Constrain && $value->getType() == Constrain::FORAIN_KEY)){
+                $val = $value->val();
+                if ($val != null){
+                    $array[$name] = "$val";
+                }
+            }
+        }
+        return $array;
+    }
+
     public function get_pk() {
         $reflex = new ReflectionClass($this->get_called_class());
         $properts = $reflex->getProperties();
@@ -199,6 +221,18 @@ abstract class Model {
             }
         }
         return null;
+    }
+    
+    public function toJson() {
+        return json_encode($this->toArray());
+    }
+    
+    public static function listToJson($list){
+        $array = [];
+        foreach ($list as $model) {
+            array_push($array, $model->toArray());
+        }
+        return json_encode($array);
     }
 
 }

@@ -36,14 +36,15 @@ class DataBase {
 
     public function executeId($sql) {
         $this->open();
-        $resEmp = mysqli_query($sql, $this->conexion);
-        if (is_bool($resEmp)) {
-            $id = mysql_insert_id($this->conexion);
+        $resEmp = mysqli_query($this->conexion, $sql);
+        $erros = mysqli_error($this->conexion);
+        if ($resEmp) {
+            $id = mysqli_insert_id($this->conexion);
             $this->close();
             return $id;
         } else {
             $this->close();
-            return $resEmp;
+            throw new SqlException($erros . ' en ' . $sql);
         }
     }
 
@@ -58,7 +59,7 @@ class DataBase {
             $this->close();
             return $vals;
         } else {
-            echo mysqli_error($this->conexion);
+            throw new SqlException(mysqli_error($this->conexion));
             //var_dump($sql);
             $this->close();
             return $resEmp;

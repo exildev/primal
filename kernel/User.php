@@ -10,7 +10,7 @@ require_once realpath(dirname(__FILE__)) . '/Access.php';
 
 Kernel::package('kernerl');
 
-abstract class User extends Model {
+class User extends Model {
 
     //put attr code here
     private $id;
@@ -68,7 +68,7 @@ abstract class User extends Model {
         return False;
     }
 
-    abstract protected function hash_type();
+    protected function hash_type(){}
 
     public function getId() {
         return $this->id;

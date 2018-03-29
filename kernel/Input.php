@@ -29,12 +29,14 @@ class Input {
     protected $vals;
     private $inps;
     private $vald;
+    private $null;
 
-    protected function __construct($html, $vals = array(), $inps = array(), $vald = array()) {
+    protected function __construct($html, $vals = array(), $vald = array(), $inps = array(), $null=false) {
         $this->html = $html;
         $this->vals = $vals;
         $this->inps = $inps;
         $this->vald = $vald;
+        $this->null = $null;
     }
 
     public function set($value) {
@@ -51,10 +53,24 @@ class Input {
             move_uploaded_file($_FILES['tmp_name'], $url);
             $this->set($url);
         } else {
-            if (isset($array[$this->vals[self::VAL_NAME]])) {
-                $this->set($array[$this->vals[self::VAL_NAME]]);
+            if (isset($array[$this->vals[self::VAL_NAME]]) && $array[$this->vals[self::VAL_NAME]] != '') {
+                if (!is_array($array[$this->vals[self::VAL_NAME]])) {
+                    $this->set($array[$this->vals[self::VAL_NAME]]);
+                }else {
+                } 
             }
         }
+    }
+
+    public function isEmpty() {
+        if ($this->html == self::HTML_SELECT) {
+            foreach ($this->inps as $inp) {
+                if ($inp->vals['{{KEY}}'] == $this->val()) {
+                    return ($inp->vals['{{VALUE}}'] == '');
+                }
+            }
+        }
+        return ($this->vals[self::VAL_VALUE] == '');
     }
 
     public function get() {
@@ -91,18 +107,19 @@ class Input {
             $title = ucfirst($name);
         }
         return new Input(self::HTML_INPUT, array(
-            self::VAL_NAME => $name,
-            self::VAL_LABEL => $label,
-            self::VAL_TYPE => 'numeric',
-            self::VAL_VALUE => $default,
-            self::VAL_PATTERN => '^[0-9]*$',
-            self::VAL_TITLE => $title,
-            self::VAL_MIN => '',
-            self::VAL_MAX => '',
-            self::VAL_ACCEPT => ''
+                    self::VAL_NAME => $name,
+                    self::VAL_LABEL => $label,
+                    self::VAL_TYPE => 'numeric',
+                    self::VAL_VALUE => $default,
+                    self::VAL_PATTERN => '^[0-9]*$',
+                    self::VAL_TITLE => $title,
+                    self::VAL_MIN => '',
+                    self::VAL_MAX => '',
+                    self::VAL_ACCEPT => ''
                 ), array(
-            new Validate('/^[0-9]*$/', $title)
-        ));
+                    new Validate('/^[0-9]*$/', 'Este campo debe ser un numero entero')
+                )
+            );
     }
 
     public static function create_decimal($name, $title = null, $default = '0', $label = null) {
@@ -123,7 +140,7 @@ class Input {
             self::VAL_MAX => '',
             self::VAL_ACCEPT => ''
                 ), array(
-            new Validate('/^([0-9]*)(|(.([0-9]+)))$/', $title)
+            new Validate('/^([0-9]*)(|(.([0-9]+)))$/', 'Este campo debe ser un numero')
         ));
     }
 
@@ -135,21 +152,28 @@ class Input {
             $title = ucfirst($name);
         }
         if ($default == null) {
-            $default = str_replace(array('d', 'm', 'y', 'h', 'M', 's'), array('00', '00', '0000', '00', '00', '00'), $format);
+            $default = str_replace(
+                array('d', 'm', 'y', 'h', 'M', 's'), 
+                array('00', '00', '0000', '00', '00', '00'), 
+                $format
+            );
         }
-        $format = str_replace(array('d', 'm', 'y', 'h', 'M', 's'), array('((0|1|2)[0-9]|3(0|1))', '(0[0-9]|1(0|1|2))', '[0-9]{4}', '((0|1)[0-9]|2(0|1|2|3|4))', '((0|1|2|3|4|5)[0-9])', '((0|1|2|3|4|5)[0-9])'), $format);
+        $regexp = str_replace(
+            array('d', 'm', 'y', 'h', 'M', 's'), 
+            array('((0|1|2)[0-9]|3(0|1))', '(0[0-9]|1(0|1|2))', '[0-9]{4}', '((0|1)[0-9]|2(0|1|2|3|4))', '((0|1|2|3|4|5)[0-9])', '((0|1|2|3|4|5)[0-9])'), 
+            $format);
         return new Input(self::HTML_INPUT, array(
             self::VAL_NAME => $name,
             self::VAL_LABEL => $label,
             self::VAL_TYPE => 'numeric',
             self::VAL_VALUE => $default,
-            self::VAL_PATTERN => '^' . $format . '$',
+            #self::VAL_PATTERN => '/^' . $regexp . '$/',
             self::VAL_TITLE => $title,
             self::VAL_MIN => '',
             self::VAL_MAX => '',
             self::VAL_ACCEPT => ''
                 ), array(
-            new Validate('/^' . $format . '$/', $title)
+            new Validate('/^' . $regexp . '$/', "Este campo debe ser de tipo fecha ($format)")
         ));
     }
 
@@ -240,7 +264,7 @@ class Input {
             self::VAL_MAX => '',
             self::VAL_ACCEPT => ''
                 ), array(
-            new Validate('/^' . $format . '$/', $title)
+            new Validate('/^' . $format . '$/', 'Este campo debe ser un e-mail')
         ));
     }
 
@@ -302,7 +326,7 @@ class Input {
             self::VAL_VALUE => $default,
             self::VAL_PATTERN => '',
             self::VAL_TITLE => $title
-                ), $inps);
+        ), [], $inps);
     }
 
     public function as_input() {
@@ -361,15 +385,21 @@ class Input {
     }
 
     public function validate() {
-        $falied = array();
+        //echo get_called_class() .'::'. $this->name() . '=' . $this->val() . '<br>';
+
+        if (!$this->null && $this->isEmpty()){
+            return new Validate('.+', 'Este campo no puede estar vacio.');
+        }
+        //var_dump($this->vald);
         if (!empty($this->vald)) {
+            //echo "valid";
             foreach ($this->vald as $valid) {
-                if ($valid->validate($this->get())) {
-                    array_push($falied, $valid);
+                if (!$valid->validate($this->get())) {
+                    return $valid;
                 }
             }
         }
-        return $falied;
+        return null;
     }
     
     public function __toString() {

@@ -18,7 +18,7 @@ class Persistence {
     private static $INVOKE = "invoke";
     private static $CREATE = "create";
 
-    public function autenticate(User & $user) {
+    public function autenticate($user) {
         $table = strtolower($user->get_called_class());
         $array = array(
             'username' => $user->getUsername()->get(),
@@ -27,7 +27,7 @@ class Persistence {
         );
         $sql = $this->sql(array('query' => self::$FILTER, 'table' => $table, 'data' => $array));
         $db = DataBase::getInstance();
-        echo "<h1>$sql</h1>";
+        //echo "<h1>$sql</h1>";
         $resp = $db->execute($sql);
 
         if ($resp && count($resp)) {
@@ -38,82 +38,75 @@ class Persistence {
         return false;
     }
 
-    public function filter(User $user, $package, $model, $array) {
-        if ($user->getVerified() && $user->access($package, $model, Access::SELECT)) {
+    public function filter($user, $package, $model, $array) {
+        if ($user && $user->getVerified() && $user->access($package, $model, Access::SELECT)) {
             $table = isset($package) ? strtolower($package . "_" . $model) : strtolower($model);
             $sql = $this->sql(array('query' => self::$FILTER, 'table' => $table, 'data' => $array));
             $db = DataBase::getInstance();
-            //var_dump($sql);
             $r = $db->execute($sql);
             return $r;
         } else {
-            header('HTTP/1.0 401 Unauthorized');
-            exit(0);
+            throw new UserNotAutoricedFoundExceptios(Access::SELECT);
         }
     }
 
-    public function delete(User $user, $package, $model, $array) {
-        if ($user->getVerified() && $user->access($package, $model, Access::DELETE)) {
+    public function delete($user, $package, $model, $array) {
+        if ($user && $user->getVerified() && $user->access($package, $model, Access::DELETE)) {
             $table = isset($package) ? strtolower($package . "_" . $model) : strtolower($model);
             $sql = $this->sql(array('query' => self::$DELETE, 'table' => $table, 'data' => $array));
             $db = DataBase::getInstance();
-            //var_dump($sql);
+            
             return $db->execute($sql);
         } else {
-            header('HTTP/1.0 401 Unauthorized');
-            exit(0);
+            throw new UserNotAutoricedFoundExceptios(Access::DELETE);
         }
     }
 
-    public function invoke(User $user, $package, $model, $array) {
-        if ($user->getVerified() && $user->access($package, $model, Access::SELECT)) {
+    public function invoke($user, $package, $model, $array) {
+        if ($user && $user->getVerified() && $user->access($package, $model, Access::SELECT)) {
             $table = isset($package) ? strtolower($package . "_" . $model) : strtolower($model);
             $sql = $this->sql(array('query' => self::$INVOKE, 'routine' => $table, 'data' => $array));
             $db = DataBase::getInstance();
             //var_dump($sql);
             return $db->execute($sql);
         } else {
-            header('HTTP/1.0 401 Unauthorized');
-            exit(0);
+            throw new UserNotAutoricedFoundExceptios(Access::SELECT);
         }
     }
 
-    public function save(User $user, $package, $model, $array) {
-        if ($user->getVerified() && $user->access($package, $model, Access::UPDATE)) {
+    public function save($user, $package, $model, $array) {
+        if ($user && $user->getVerified() && $user->access($package, $model, Access::UPDATE)) {
             $table = isset($package) ? strtolower($package . "_" . $model) : strtolower($model);
             $sql = $this->sql(array('query' => self::$SAVE, 'table' => $table, 'data' => $array));
             $db = DataBase::getInstance();
             //var_dump($sql); 
             return $db->executeId($sql);
         } else {
-            header('HTTP/1.0 401 Unauthorized');
-            exit(0);
+            throw new UserNotAutoricedFoundExceptios(Access::UPDATE);
         }
     }
 
-    public function edit(User $user, $package, $model, $array) {
-        if ($user->getVerified() && $user->access($package, $model, Access::UPDATE)) {
+    public function edit($user, $package, $model, $array) {
+        if ($user && $user->getVerified() && $user->access($package, $model, Access::UPDATE)) {
             $table = isset($package) ? strtolower($package . "_" . $model) : strtolower($model);
             $sql = $this->sql(array('query' => self::$EDIT, 'table' => $table, 'data' => $array));
             $db = DataBase::getInstance();
             //var_dump($sql);
-            return $db->execute($sql);
+            return $db->executeId($sql);
         } else {
-            header('HTTP/1.0 401 Unauthorized');
-            exit(0);
+            throw new UserNotAutoricedFoundExceptios(Access::UPDATE);
         }
     }
 
-    public function create(User $user, $package, $model, $array) {
-        if ($user->getVerified() && $user->access($package, $model, Access::INSERT)) {
+    public function create($user, $package, $model, $array) {
+        if ($user && $user->getVerified() && $user->access($package, $model, Access::INSERT)) {
             $table = strtolower($package . "_" . $model);
             $sql = $this->sql(array('query' => self::$CREATE, 'table' => $table, 'data' => $array));
             $db = DataBase::getInstance();
             //var_dump($sql);
             return $db->execute($sql);
         } else {
-            header('HTTP/1.0 401 Unauthorized');
-            exit(0);
+            throw new UserNotAutoricedFoundExceptios(Access::INSERT);
         }
     }
 
@@ -159,7 +152,7 @@ class Persistence {
                 $value = $value->getName();
             } else {
                 if (isset($value) && $value != '') {
-                    $value = "'" . $value . "'";
+                    $value = "'" . str_replace("'", "\'", $value) . "'";
                 } else {
                     $value = "NULL";
                 }
@@ -187,7 +180,7 @@ class Persistence {
                     $sql.= "`$key`" . " = " . $value->getName() . "";
                 } else {
                     if (isset($value) && $value != '') {
-                        $sql.= "`$key`" . " = '" . $value . "'";
+                        $sql.= "`$key`" . " = '" . str_replace("'", "\'", $value) . "'";
                     } else {
                         $sql.= "`$key`" . " = NULL";
                     }

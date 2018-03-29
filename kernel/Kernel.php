@@ -5,9 +5,11 @@
  * @author eXile
  */
 require_once realpath(dirname(__FILE__)) . '/Access.php';
+require_once realpath(dirname(__FILE__)) . '/Exceptions.php';
 require_once realpath(dirname(__FILE__)) . '/Input.php';
 require_once realpath(dirname(__FILE__)) . '/Constrain.php';
 require_once realpath(dirname(__FILE__)) . '/Model.php';
+require_once realpath(dirname(__FILE__)) . '/Form.php';
 require_once realpath(dirname(__FILE__)) . '/Routine.php';
 require_once realpath(dirname(__FILE__)) . '/User.php';
 require_once realpath(dirname(__FILE__)) . '/Session.php';

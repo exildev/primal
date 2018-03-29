@@ -13,7 +13,7 @@ class Constrain extends Input {
     private $type;
     private $refer;
 
-    protected function __construct($name, $type, $refer) {
+    protected function __construct($name, $type, $refer, $null=true) {
         parent::__construct(self::HTML_INPUT, array(
             self::VAL_NAME => $name,
             self::VAL_LABEL => ucfirst($name),
@@ -24,13 +24,13 @@ class Constrain extends Input {
             self::VAL_MIN => '',
             self::VAL_MAX => '',
             self::VAL_ACCEPT => ''
-        ));
+        ), [], [], $null);
         $this->type = $type;
         $this->refer = $refer;
     }
 
     public static function fk($name, $package_model) {
-        return new Constrain($name, self::FORAIN_KEY, $package_model);
+        return new Constrain($name, self::FORAIN_KEY, $package_model, false);
     }
 
     public static function pk($self, $name = 'id') {
@@ -57,7 +57,7 @@ class Constrain extends Input {
 
     public function getReferModel() {
         $explode = explode(".", $this->refer);
-        return $explode[1];
+        return end($explode);
     }
 
     private function as_pk() {
@@ -124,7 +124,7 @@ class Constrain extends Input {
     }
 
     public function __toString() {
-        return $this->val();
+        return $this->val(). "";
     }
 
 }

@@ -30,14 +30,17 @@ class Router {
 
         $dos = explode('.', $do);
         $pak = $dos[0];
-        $fun = $dos[1];
-        require_once $base . '/' . $pak . '/view/' . ucfirst($pak) . '.php';
-        $packet = new $pak();
+        $viw = $dos[1];
+        $fun = $dos[2];
+        require_once $base . '/' . $pak . '/view/' . ucfirst($viw) . '.php';
+        $packet = new $viw();
         if ($packet instanceof View) {
             if (isset($_GET['LANG'])) {
                 $packet->setLanguage($_GET['LANG']);
             }
-            return $packet->{$fun}();
+            if ($packet->dispatch()){
+                return $packet->{$fun}();
+            }
         }
     }
 
