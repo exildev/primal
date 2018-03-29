@@ -16,7 +16,7 @@ Install using composer
 
 The first stpep for use Primal is star a new proyect, we will use the bellow command:
 
-    $ php vendors/Kernel/commands/start.php myapp
+    $ php manage.php startapp myapp
 Then we will have a new folder structure:
 
  - myapp
