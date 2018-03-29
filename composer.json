@@ -12,5 +12,10 @@
 	"description": "Primal it's a PHP framework for Restful service.",
     "require": {
         "php": "^5.3.3 || ^7.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php install.php"
+        ]
     }
 }
