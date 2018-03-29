@@ -1,7 +1,14 @@
 {
     "name": "luismoralesp/primal",
     "version": "1.0",
-    "keywords": "rest-api, json-api, php, php-framework, easy-to-use, composer",
+    "keywords": [
+    	"rest-api", 
+    	"json-api", 
+    	"php", 
+    	"php-framework", 
+    	"easy-to-use", 
+    	"composer"
+    ],
 	"description": "Primal it's a PHP framework for Restful service.",
     "require": {
         "php": "^5.3.3 || ^7.0"
