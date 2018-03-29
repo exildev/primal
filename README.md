@@ -1,5 +1,6 @@
 # primal-php
-Primal it's a PHP framework for template and SQL query manage.
+Primal it's a PHP framework for Restful service.
+
 **Install**
 
 Install using composer
@@ -102,7 +103,7 @@ So in our class file  we have to define our fields and contrains.
   }
   /* So your getters and setters */
 ```
-- The `Constrain::pk` method is used  `primary key` fields for this model, see about more contrains in the CONSTRAINS.md tuto.
+- The `Constrain::pk` method is used  `primary key` fields for this model, see about more contrains in the INPUTS.md tuto.
 - The `Input::create_text` and `Input::create_integer` methods specify a varchar and int columns respectly in the table reprecented by this model, read about more inputs in the INPUTS.md tuto.
 
 For use that model class in our view file we will have to import it, using the bellow line:
