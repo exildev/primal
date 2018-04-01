@@ -1,6 +1,6 @@
 {
     "name": "luismoralesp/primal",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "keywords": [
         "rest-api",
         "json-api",
@@ -15,10 +15,11 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "primal\\Install::starts"
+            "php install.php"
         ],
         "post-update-cmd": [
-            "primal\\Install::starts"
-        ]
+            "php install.php"
+        ],
+        "init": "php install.php"
     }
 }

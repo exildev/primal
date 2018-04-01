@@ -8,7 +8,7 @@ Install using composer
 
     {
       "require": {
-        "luismoralesp/primal": "1.0"
+        "luismoralesp/primal": "1.0.5"
       }
     }
 
@@ -16,7 +16,9 @@ Install using composer
 
 The first stpep for use Primal is star a new proyect, we will use the bellow command:
 
+    $ php /vendor/luismoralesp/primal/install.php 
     $ php manage.php startapp myapp
+    
 Then we will have a new folder structure:
 
  - myapp
