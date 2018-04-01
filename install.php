@@ -2,5 +2,17 @@
 /**
  * This file copy the main command to project root
  */
-$path = realpath(dirname(__FILE__));
-copy("$path/kernel/commands/manage.php", "$path/../../../manage.php");
+
+namespace CorleyComposer;
+
+use ComposerScriptEvent;
+
+class MyHook
+{
+    public static function starts(Event $event)
+    {
+    	$path = realpath(dirname(__FILE__));
+		copy("$path/kernel/commands/manage.php", "$path/../../../manage.php");
+        $event->getIO()->write("manage file copied");
+    }
+}

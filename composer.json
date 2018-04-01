@@ -2,20 +2,23 @@
     "name": "luismoralesp/primal",
     "version": "1.0.1",
     "keywords": [
-    	"rest-api", 
-    	"json-api", 
-    	"php", 
-    	"php-framework", 
-    	"easy-to-use", 
-    	"composer"
+        "rest-api", 
+        "json-api", 
+        "php", 
+        "php-framework", 
+        "easy-to-use", 
+        "composer"
     ],
-	"description": "Primal it's a PHP framework for Restful service.",
+    "description": "Primal it's a PHP framework for Restful service.",
     "require": {
         "php": "^5.3.3 || ^7.0"
     },
     "scripts": {
         "post-install-cmd": [
-            "php install.php"
+            "Corley\Deploy\Install::starts"
+        ],
+        "post-update-cmd": [
+            "Corley\Deploy\Install::starts"
         ]
     }
 }
