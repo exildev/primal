@@ -7,7 +7,7 @@ namespace CorleyComposer;
 
 use ComposerScriptEvent;
 
-class MyHook
+class Install
 {
     public static function starts(Event $event)
     {
