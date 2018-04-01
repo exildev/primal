@@ -1,6 +1,6 @@
 {
     "name": "luismoralesp/primal",
-    "version": "1.0.3",
+    "version": "dev-master",
     "keywords": [
         "rest-api",
         "json-api",
@@ -15,10 +15,10 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "Corley\\Deploy\\Install::starts"
+            "primal\\Install::starts"
         ],
         "post-update-cmd": [
-            "Corley\\Deploy\\Install::starts"
+            "primal\\Install::starts"
         ]
     }
 }

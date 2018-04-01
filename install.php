@@ -3,7 +3,7 @@
  * This file copy the main command to project root
  */
 
-namespace CorleyComposer;
+namespace primal;
 
 use ComposerScriptEvent;
 
